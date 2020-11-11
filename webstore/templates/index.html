@@ -62,18 +62,18 @@
 
                     <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                         <div class="navbar-nav mr-auto">
-                            <a href="index.html" class="nav-item nav-link active">Trang chủ</a>
-                            <a href="product-list.html" class="nav-item nav-link">Sản phẩm</a>
-                            <a href="product-detail.html" class="nav-item nav-link">Chi tiết sản phẩm</a>
-                            <a href="cart.html" class="nav-item nav-link">Giỏ hàng</a>
-                            <a href="checkout.html" class="nav-item nav-link">Thanh toán</a>
-                            <a href="my-account.html" class="nav-item nav-link">Tài khoản</a>
+                            <a href="{{ url_for('index') }}" class="nav-item nav-link active">Trang chủ</a>
+                            <a href="{{ url_for('product_list') }}" class="nav-item nav-link">Sản phẩm</a>
+                            <a href="{{ url_for('product_detail') }}" class="nav-item nav-link">Chi tiết sản phẩm</a>
+                            <a href="{{ url_for('cart') }}" class="nav-item nav-link">Giỏ hàng</a>
+                            <a href="{{ url_for('checkout') }}" class="nav-item nav-link">Thanh toán</a>
+                            <a href="{{ url_for('my_account') }}" class="nav-item nav-link">Tài khoản</a>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Thêm</a>
                                 <div class="dropdown-menu">
-                                    <a href="wishlist.html" class="dropdown-item">Yêu thích</a>
-                                    <a href="login.html" class="dropdown-item">Đăng ký & Đăng nhập</a>
-                                    <a href="contact.html" class="dropdown-item">Liên hệ</a>
+                                    <a href="{{ url_for('wishlist') }}" class="dropdown-item">Yêu thích</a>
+                                    <a href="{{ url_for('login') }}" class="dropdown-item">Đăng ký & Đăng nhập</a>
+                                    <a href="{{ url_for('contact') }}" class="dropdown-item">Liên hệ</a>
                                 </div>
                             </div>
                         </div>
