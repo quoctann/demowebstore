@@ -1,20 +1,25 @@
 from flask import render_template
 from webstore import app
+from webstore.models import Product
+
 
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    products = Product.query.filter(Product.id.startswith("SS")).all()
+    return render_template('index.html', products= products)
 
 
 @app.route('/product-list')
 def product_list():
-    return render_template('product-list.html')
+    products = Product.query.filter(Product.category_id.startswith("1")).all()
+    return render_template('product-list.html', products=products)
 
 
 @app.route('/product-detail')
 def product_detail():
-    return render_template('product-detail.html')
+    products = Product.query.filter(Product.category_id.startswith("1")).all()
+    return render_template('product-detail.html', products=products)
 
 
 @app.route('/login')
