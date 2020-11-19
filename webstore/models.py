@@ -32,5 +32,14 @@ class Product(SampleBase):
 
 
 
+class User(SampleBase):
+    __tablename__= 'user'
+
+    username = Column(String(20), nullable=False)
+    password = Column(String(40), nullable=False)
+    active = Column(Boolean, default=True)
+    role = Column(Integer, default=0)
+
+
 if __name__ == '__main__':
     db.create_all()

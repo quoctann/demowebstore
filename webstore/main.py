@@ -1,6 +1,7 @@
-from flask import render_template
-from webstore import app
+from flask import render_template, request, redirect, session, url_for
+from webstore import app, utils
 from webstore.models import Product
+from flask_login import logout_user, login_user
 
 
 
@@ -21,10 +22,10 @@ def product_detail():
     products = Product.query.filter(Product.category_id.startswith("1")).all()
     return render_template('product-detail.html', products=products)
 
-
-@app.route('/login')
-def login():
-    return render_template('login.html')
+#
+# @app.route('/login')
+# def login():
+#     return render_template('login.html')
 
 
 @app.route('/cart')
@@ -50,6 +51,62 @@ def my_account():
 @app.route('/wishlist')
 def wishlist():
     return render_template('wishlist.html')
+
+
+
+@app.route("/login", methods=["get", "post"])
+def login():
+    err_msg = ""
+    if request.method == 'POST':
+        username = request.form.get("username")
+        password = request.form.get("password")
+        user = utils.check_login(username=username, password=password)
+        if user:
+            login_user(user=user)
+            if "next" in request.args:
+                return redirect(request.args["next"])
+
+            return redirect(url_for('index'))
+        else:
+            err_msg = "Something wrong!!!"
+
+    return render_template("login.html", err_msg=err_msg)
+
+
+@app.route("/logout")
+def logout():
+    logout_user()
+
+    return redirect(url_for("index"))
+
+
+@app.route("/register", methods=["get", "post"])
+def register():
+    if session.get("user"):
+        return redirect(request.url)
+
+    err_msg = ""
+    if request.method == "POST":
+        name = request.form.get("name")
+        username = request.form.get("username")
+        password = request.form.get("password")
+        confirm = request.form.get("confirm")
+        if password.strip() != confirm.strip():
+            err_msg = "Mat khau khong khop"
+        else:
+            if utils.add_user(name=name, username=username, password=password):
+                return redirect(url_for("signin_user"))
+            else:
+                err_msg = "Something Wrong!!!"
+
+    return render_template("register.html", err_msg=err_msg)
+
+
+#
+# @login.user_loader
+# def get_user(user_id):
+#     return utils.get_user_by_id(user_id=user_id)
+#
 
 
 if __name__ == '__main__':
