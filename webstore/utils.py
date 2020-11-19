@@ -20,6 +20,6 @@ def check_login(username, password):
                              User.password == password).first()
 
 
-
-def get_user_by_id(user_id):
-    return User.query.get(user_id)
+#
+# def get_user_by_id(user_id):
+#     return User.query.get(user_id)

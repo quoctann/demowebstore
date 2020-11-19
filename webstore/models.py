@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, Float, String, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 from webstore import db
+from flask_login import UserMixin
 
 
 class SampleBase(db.Model):
@@ -32,9 +33,11 @@ class Product(SampleBase):
 
 
 
-class User(SampleBase):
+class User(db.Model, UserMixin):
     __tablename__= 'user'
 
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String(50), nullable=False)
     username = Column(String(20), nullable=False)
     password = Column(String(40), nullable=False)
     active = Column(Boolean, default=True)

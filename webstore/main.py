@@ -1,8 +1,13 @@
 from flask import render_template, request, redirect, session, url_for
-from webstore import app, utils
+from webstore import app, utils, login
 from webstore.models import Product
 from flask_login import logout_user, login_user
+from webstore.models import *
 
+
+@login.user_loader
+def user_load(user_id):
+    return User.query.get(user_id)
 
 
 @app.route('/')
@@ -21,11 +26,6 @@ def product_list():
 def product_detail():
     products = Product.query.filter(Product.category_id.startswith("1")).all()
     return render_template('product-detail.html', products=products)
-
-#
-# @app.route('/login')
-# def login():
-#     return render_template('login.html')
 
 
 @app.route('/cart')
@@ -95,18 +95,13 @@ def register():
             err_msg = "Mat khau khong khop"
         else:
             if utils.add_user(name=name, username=username, password=password):
-                return redirect(url_for("signin_user"))
+                return redirect(url_for("login"))
             else:
                 err_msg = "Something Wrong!!!"
 
     return render_template("register.html", err_msg=err_msg)
 
 
-#
-# @login.user_loader
-# def get_user(user_id):
-#     return utils.get_user_by_id(user_id=user_id)
-#
 
 
 if __name__ == '__main__':
