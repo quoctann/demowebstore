@@ -2,7 +2,7 @@
 
 {% block body %}
      <div class="container">
-        <h1 class="text-center text-success">DANG KY TAI KHOAN</h1>
+        <h1 class="text-center text-success">ĐĂNG KÝ TÀI KHOẢN</h1>
         {% if err_msg %}
         <div class="alert alert-danger">
             <h1>{{ err_msg }}</h1>
@@ -26,8 +26,9 @@
                        name="confirm" class="form-control" required />
             </div>
             <div class="form-group">
-                <input type="submit" value="Dang ky"
+                <input type="submit" value="Đăng ký"
                        class="btn btn-danger" />
+                <a class="btn btn-danger" href="{{ url_for('login') }}">Đăng nhập</a>
             </div>
         </form>
     </div>

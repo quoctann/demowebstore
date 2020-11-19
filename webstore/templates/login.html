@@ -2,7 +2,12 @@
 
 {% block body %}
     <div class="container">
-        <h1 class="text-center text-success">LOGIN</h1>
+        <h1 class="text-center text-success">Đăng nhập</h1>
+        {% if err_msg %}
+        <div class="alert alert-danger">
+            <h1>{{ err_msg }}</h1>
+        </div>
+        {% endif %}
         <form method="post">
             <div class="form-group">
                 <input type="text" placeholder="Username..."
@@ -13,9 +18,9 @@
                        name="password" class="form-control" />
             </div>
             <div class="form-group">
-                <input type="submit" value="Login"
+                <input type="submit" value="Đăng nhập"
                        class="btn btn-danger" />
-                <a href="{{ url_for('register') }}"><input value="Register"
+                <a href="{{ url_for('register') }}"><input value="Đăng ký"
                        class="btn btn-danger" /></a>
             </div>
         </form>

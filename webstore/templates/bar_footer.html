@@ -65,6 +65,7 @@
                             <a href="{{ url_for('index') }}" class="nav-item nav-link active">Trang chủ</a>
                             <a href="{{ url_for('product_list') }}" class="nav-item nav-link">Sản phẩm</a>
                             <a href="{{ url_for('product_detail') }}" class="nav-item nav-link">Chi tiết sản phẩm</a>
+                        {% if current_user.is_authenticated %}
                             <a href="{{ url_for('cart') }}" class="nav-item nav-link">Giỏ hàng</a>
                             <a href="{{ url_for('checkout') }}" class="nav-item nav-link">Thanh toán</a>
                             <a href="{{ url_for('my_account') }}" class="nav-item nav-link">Tài khoản</a>
@@ -72,20 +73,25 @@
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Thêm</a>
                                 <div class="dropdown-menu">
                                     <a href="{{ url_for('wishlist') }}" class="dropdown-item">Yêu thích</a>
-                                    <a href="{{ url_for('login') }}" class="dropdown-item">Đăng ký & Đăng nhập</a>
                                     <a href="{{ url_for('contact') }}" class="dropdown-item">Liên hệ</a>
                                 </div>
                             </div>
+                        {% endif %}
                         </div>
+
+                        {% if not current_user.is_authenticated %}
                         <div class="navbar-nav ml-auto">
-                            <div class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Tài khoản</a>
-                                <div class="dropdown-menu">
-                                    <a href="#" class="dropdown-item">Đăng nhập</a>
-                                    <a href="{{ url_for('register') }}" class="dropdown-item">Đăng ký</a>
-                                </div>
+                            <div class="nav-item">
+                                <a class="nav-link" href="{{ url_for('login') }}">Login</a>
                             </div>
                         </div>
+                        {% else %}
+                        <div class="navbar-nav ml-auto">
+                            <div class="nav-item">
+                                <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                            </div>
+                        </div>
+                        {% endif %}
                     </div>
                 </nav>
             </div>

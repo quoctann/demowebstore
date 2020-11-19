@@ -1,7 +1,7 @@
 from flask import render_template, request, redirect, session, url_for
 from webstore import app, utils, login
 from webstore.models import Product
-from flask_login import logout_user, login_user
+from flask_login import logout_user, login_user, login_required
 from webstore.models import *
 
 
@@ -12,8 +12,8 @@ def user_load(user_id):
 
 @app.route('/')
 def index():
-    products = Product.query.filter(Product.id.startswith("SS")).all()
-    return render_template('index.html', products= products)
+
+    return render_template('index.html')
 
 
 @app.route('/product-list')
@@ -29,26 +29,31 @@ def product_detail():
 
 
 @app.route('/cart')
+@login_required
 def cart():
     return render_template('cart.html')
 
 
 @app.route('/checkout')
+@login_required
 def checkout():
     return render_template('checkout.html')
 
 
 @app.route('/contact')
+@login_required
 def contact():
     return render_template('contact.html')
 
 
 @app.route('/my-account')
+@login_required
 def my_account():
     return render_template('my-account.html')
 
 
 @app.route('/wishlist')
+@login_required
 def wishlist():
     return render_template('wishlist.html')
 
@@ -77,7 +82,7 @@ def login():
 def logout():
     logout_user()
 
-    return redirect(url_for("index"))
+    return redirect(url_for("index",))
 
 
 @app.route("/register", methods=["get", "post"])
