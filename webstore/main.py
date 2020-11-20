@@ -122,7 +122,7 @@ def email_verify(user_email):
     link = url_for('confirm_email', token=token, _external=True)
     msg.body = 'Vui lòng nhấn vào liên kết sau để xác nhận email. Liên kết của bạn là: {}'.format(link)
     mail.send(msg)
-    return render_template("verify-email.html", user_email=user_email)
+    return render_template("verify-email.html", user_email=user_email, )
 
 
 @app.route('/confirm_email/<token>')
@@ -131,7 +131,43 @@ def confirm_email(token):
         email = randomToken.loads(token, salt='email_confirm', max_age=900)
     except SignatureExpired:
         return render_template('verify-expired.html')
-    return render_template('verify-success.html')
+    return render_template('verify-success.html', email=email)
+
+
+@app.route("/forgot_password", methods=["get", "post"])
+def forgot_password():
+    err_msg = ""
+    if request.method == 'POST':
+        try:
+            email = request.form.get("email")
+            if utils.check_mail(email=email):
+                return redirect(url_for("request_sent", user_email=email))
+            else:
+                err_msg = "Nhập sai email"
+        except IntegrityError:
+            err_msg = "Nhập sai email"
+
+    return render_template("forgot-password.html", err_msg=err_msg)
+
+
+@app.route('/request_sent/<user_email>', methods=["GET", "POST"])
+def request_sent(user_email):
+    token = randomToken.dumps(user_email, salt="recovery_account")
+    msg = Message('Khôi phục tài khoản', sender='emailverifywebapp@gmail.com', recipients=[user_email])
+    link = url_for('recovery_account', token=token, _external=True)
+    msg.body = 'Bạn đang tiến hành đặt lại mật khẩu, liên kết sẽ hết hạn sau 15 phút. Nhấn vào liên kết sau ' \
+               'để đặt lại mật khẩu: {}'.format(link)
+    mail.send(msg)
+    return render_template("recovery-sent.html", user_email=user_email)
+
+
+@app.route('/recovery_account/<token>')
+def recovery_account(token):
+    try:
+        e = randomToken.loads(token, salt='recovery_account', max_age=900)
+    except SignatureExpired:
+        return render_template('verify-expired.html')
+    return render_template('recovery-account.html')
 
 
 if __name__ == '__main__':

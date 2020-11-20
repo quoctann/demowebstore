@@ -21,6 +21,9 @@ def check_login(username, password):
                              User.password == password).first()
 
 
-#
-# def get_user_by_id(user_id):
-#     return User.query.get(user_id)
+def check_user(username):
+    return User.query.filter(User.username == username).first()
+
+
+def check_mail(email):
+    return User.query.filter(User.email == email).first()
