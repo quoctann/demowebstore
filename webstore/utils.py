@@ -4,9 +4,10 @@ from webstore import db
 from webstore.models import User
 
 
-def add_user(name, username, password):
+def add_user(name, username, email, password):
     user = User(name=name,
                 username=username,
+                email=email,
                 password=str(hashlib.md5(password.strip().encode("utf-8")).hexdigest()))
     db.session.add(user)
     db.session.commit()

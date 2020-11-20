@@ -1,8 +1,13 @@
 from flask import render_template, request, redirect, session, url_for
-from webstore import app, utils, login
-from webstore.models import Product
 from flask_login import logout_user, login_user, login_required
+from flask_mail import Message, Mail
+from sqlalchemy.exc import IntegrityError
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired
+from webstore import app, utils, login, mail
 from webstore.models import *
+
+
+randomToken = URLSafeTimedSerializer('this_is_a_secret_key')
 
 
 @login.user_loader
@@ -58,7 +63,6 @@ def wishlist():
     return render_template('wishlist.html')
 
 
-
 @app.route("/login", methods=["get", "post"])
 def login():
     err_msg = ""
@@ -73,7 +77,7 @@ def login():
 
             return redirect(url_for('index'))
         else:
-            err_msg = "Something wrong!!!"
+            err_msg = "Vui lòng nhập đầy đủ thông tin"
 
     return render_template("login.html", err_msg=err_msg)
 
@@ -92,21 +96,42 @@ def register():
 
     err_msg = ""
     if request.method == "POST":
-        name = request.form.get("name")
-        username = request.form.get("username")
-        password = request.form.get("password")
-        confirm = request.form.get("confirm")
-        if password.strip() != confirm.strip():
-            err_msg = "Mat khau khong khop"
-        else:
-            if utils.add_user(name=name, username=username, password=password):
-                return redirect(url_for("login"))
+        try:
+            name = request.form.get("name")
+            username = request.form.get("username")
+            password = request.form.get("password")
+            confirm = request.form.get("confirm")
+            email = request.form.get("email")
+            if password.strip() != confirm.strip():
+                err_msg = "Mat khau khong khop"
             else:
-                err_msg = "Something Wrong!!!"
+                if utils.add_user(name=name, username=username, email=email, password=password):
+                    return redirect(url_for("email_verify", user_email=email))
+                else:
+                    err_msg = "Internal Error"
+        except IntegrityError:
+            err_msg = "Tên người dùng hoặc email đã có người sử dụng, vui lòng thử lại!"
 
     return render_template("register.html", err_msg=err_msg)
 
 
+@app.route('/email-verification/<user_email>', methods=["GET", "POST"])
+def email_verify(user_email):
+    token = randomToken.dumps(user_email, salt="email_confirm")
+    msg = Message('Thư xác nhận', sender='emailverifywebapp@gmail.com', recipients=[user_email])
+    link = url_for('confirm_email', token=token, _external=True)
+    msg.body = 'Vui lòng nhấn vào liên kết sau để xác nhận email. Liên kết của bạn là: {}'.format(link)
+    mail.send(msg)
+    return render_template("verify-email.html", user_email=user_email)
+
+
+@app.route('/confirm_email/<token>')
+def confirm_email(token):
+    try:
+        email = randomToken.loads(token, salt='email_confirm', max_age=900)
+    except SignatureExpired:
+        return render_template('verify-expired.html')
+    return render_template('verify-success.html')
 
 
 if __name__ == '__main__':

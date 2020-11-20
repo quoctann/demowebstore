@@ -11,7 +11,7 @@
         <link href="{{ url_for('static', filename='img/logo.png') }}" rel="icon">
 
         <!-- Google Fonts -->
-        <link href="https://fonts.googleapis.com/css2?family=Lato&family=Roboto&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans&family=Roboto&display=swap" rel="stylesheet">
 
         <!-- CSS Libraries -->
 <!--        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">-->
@@ -25,11 +25,11 @@
     </head>
     <style>
         h2 {
-            font-family: 'Lato', sans-serif;
+            font-family: 'Josefin Sans', sans-serif !important;
             font-weight: 700;
         }
         .header-slider .header-slider-caption p{
-            font-family: 'Lato', sans-serif;
+            font-family: 'Josefin Sans', sans-serif;
             font-weight: 700;
         }
     </style>
@@ -214,7 +214,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-6 copyright">
-                        <p>Copyright &copy; <a href="https://htmlcodex.com">Thanh Vũ Store</a>. All Rights Reserved</p>
+                        <p>Copyright &copy; <a href="{{ url_for('index') }}">Thanh Vũ Store</a>. All Rights Reserved</p>
                     </div>
 
                     <div class="col-md-6 template-by">

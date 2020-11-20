@@ -2,20 +2,22 @@
 
 {% block body %}
     <div class="container">
-        <h1 class="text-center text-success">Đăng nhập</h1>
+        <h2 class="text-center">ĐĂNG NHẬP</h2>
         {% if err_msg %}
         <div class="alert alert-danger">
-            <h1>{{ err_msg }}</h1>
+            <h5>{{ err_msg }}</h5>
         </div>
         {% endif %}
         <form method="post">
             <div class="form-group">
                 <input type="text" placeholder="Username..."
-                       name="username" class="form-control" />
+                       name="username" class="form-control"
+                       required />
             </div>
             <div class="form-group">
                 <input type="password" placeholder="Password..."
-                       name="password" class="form-control" />
+                       name="password" class="form-control"
+                       required />
             </div>
             <div class="form-group">
                 <input type="submit" value="Đăng nhập"

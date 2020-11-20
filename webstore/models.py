@@ -19,6 +19,7 @@ class Category(SampleBase):
 
     products = relationship('Product', backref='category', lazy=True)
 
+
 class Product(SampleBase):
     __tablename__ = 'product'
 
@@ -32,16 +33,17 @@ class Product(SampleBase):
     category_id = Column(String(10), ForeignKey(Category.id), nullable=False)
 
 
-
 class User(db.Model, UserMixin):
-    __tablename__= 'user'
+    __tablename__ = 'user'
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True, autoincrement=True, unique=True)
     name = Column(String(50), nullable=False)
-    username = Column(String(20), nullable=False)
+    username = Column(String(20), nullable=False, unique=True)
+    email = Column(String(50), nullable=False)
     password = Column(String(40), nullable=False)
     active = Column(Boolean, default=True)
     role = Column(Integer, default=0)
+    email_confirmed = Column(Boolean, default=False)
 
 
 if __name__ == '__main__':
