@@ -1,3 +1,4 @@
+import hashlib
 from flask import render_template, request, redirect, session, url_for
 from flask_login import logout_user, login_user, login_required
 from flask_mail import Message, Mail
@@ -77,7 +78,7 @@ def login():
 
             return redirect(url_for('index'))
         else:
-            err_msg = "Vui lòng nhập đầy đủ thông tin"
+            err_msg = "Thiếu thông tin hoặc sai mật khẩu"
 
     return render_template("login.html", err_msg=err_msg)
 
@@ -134,7 +135,7 @@ def confirm_email(token):
     return render_template('verify-success.html', email=email)
 
 
-@app.route("/forgot_password", methods=["get", "post"])
+@app.route("/forgot_password", methods=['GET', 'POST'])
 def forgot_password():
     err_msg = ""
     if request.method == 'POST':
@@ -154,20 +155,45 @@ def forgot_password():
 def request_sent(user_email):
     token = randomToken.dumps(user_email, salt="recovery_account")
     msg = Message('Khôi phục tài khoản', sender='emailverifywebapp@gmail.com', recipients=[user_email])
-    link = url_for('recovery_account', token=token, _external=True)
+    link = url_for('recovery_account', token=token, user_email=user_email, _external=True)
     msg.body = 'Bạn đang tiến hành đặt lại mật khẩu, liên kết sẽ hết hạn sau 15 phút. Nhấn vào liên kết sau ' \
                'để đặt lại mật khẩu: {}'.format(link)
     mail.send(msg)
     return render_template("recovery-sent.html", user_email=user_email)
 
 
-@app.route('/recovery_account/<token>')
-def recovery_account(token):
+@app.route('/recovery_account/<token>/<user_email>', methods=['GET','POST'])
+def recovery_account(token, user_email):
     try:
-        e = randomToken.loads(token, salt='recovery_account', max_age=900)
+        e = randomToken.loads(token, salt='recovery_account', max_age=3600)
     except SignatureExpired:
         return render_template('verify-expired.html')
+    if request.method == 'POST':
+        password = request.form.get("password")
+        user = utils.check_mail(user_email)
+        if user:
+            user.password = str(hashlib.md5(password.strip().encode("utf-8")).hexdigest())
+            db.session.add(user)
+            db.session.commit()
+            return render_template('password-reset.html')
     return render_template('recovery-account.html')
+
+#
+# @app.route('/password_reset', methods=["GET", "POST"])
+# def password_reset(user_email):
+#     err_msg = ""
+#     user = utils.check_mail(user_email)
+#     if request.method == 'POST':
+#         password = request.form.get("password")
+#         if user:
+#             user.password = str(hashlib.md5(password.strip().encode("utf-8")).hexdigest())
+#             db.session.add(user)
+#             db.session.commit()
+#             err_msg = "Đổi mật khẩu thành công, vui lòng đăng nhập lại"
+#         else:
+#             err_msg = "Internal error"
+#
+#     return render_template("recovery-account.html")
 
 
 if __name__ == '__main__':

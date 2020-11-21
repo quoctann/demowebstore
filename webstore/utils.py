@@ -1,5 +1,4 @@
 import hashlib
-
 from webstore import db
 from webstore.models import User
 
