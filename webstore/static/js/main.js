@@ -18,8 +18,9 @@
         $(window).resize(toggleNavbarMethod);
     });
     
-    
-    // Back to top button
+    //jQuery("#item_0").fadeOut("slow");
+
+    //Back to top button
     $(window).scroll(function () {
         if ($(this).scrollTop() > 100) {
             $('.back-to-top').fadeIn('slow');
